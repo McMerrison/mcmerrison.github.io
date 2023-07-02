@@ -1,5 +1,5 @@
 # NY SEE - NYC Utility Map
-URL: [NY SEE](mcmerrison.github.io)
+URL: [NY SEE](http://mcmerrison.github.io)
 
 Map of: 
 - LinkNYC Kiosk Locations, Info, Phone/Wi-Fi status, etc.
