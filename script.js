@@ -26,19 +26,29 @@ var bike_full = L.icon({
   });
   
 
-  var bike_one = L.icon({
+var bike_one = L.icon({
     iconUrl: 'img/bike-one.png',
     iconSize: [bike_size_w, bike_size_h],
     popupAnchor: [0, -15]
-  });
+});
   
-  var bike_empty = L.icon({
+var bike_empty = L.icon({
     iconUrl: 'img/bike-empty.png',
     iconSize: [bike_size_w, bike_size_h],
     popupAnchor: [0, -15]
-  });
+});
 
-const map = L.map('map').setView([40.7128, -74.0060], 12); // Set the initial map view to NYC
+// Bathroom Database
+var bathroom_data = "./toilets_point.geojson"
+
+// Bathroom Icon
+var toilet = L.icon({
+    iconUrl: 'img/toilet.png',
+    iconSize: [30, 40],
+});
+
+
+  const map = L.map('map').setView([40.7128, -74.0060], 12); // Set the initial map view to NYC
 getKiosks();
 
 
@@ -142,6 +152,37 @@ function getBikes() {
     });
 }
 
+function getBathrooms() {
+    fetch(bathroom_data)
+        .then(response => response.json())
+        .then(data => {
+            // Process JSON Data
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            }).addTo(map); 
+
+            data = data.features;
+            data.forEach(wc => {
+                console.log(wc.geometry.coordinates);
+                var x = wc.geometry.coordinates[1];
+                var y = wc.geometry.coordinates[0];
+
+                icon = toilet;
+                var addressHTML = `<strong>Address: </strong>`;
+                var capacityHTML = `<strong id="capacity">Capacity:</strong> `;
+                
+                L.marker([x, y], {icon: icon})
+                .addTo(map)
+                .bindPopup(addressHTML + "<br>" + capacityHTML);
+            });
+
+        })
+        .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 
 
 function handleOptionChange(value) {
@@ -160,5 +201,7 @@ function handleOptionChange(value) {
         getKiosks();
     } else if (selectedOption == "bike") {
         getBikes();
+    } else if (selectedOption == "bathroom") {
+        getBathrooms();
     }
 }
